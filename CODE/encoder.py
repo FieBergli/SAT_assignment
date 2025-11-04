@@ -79,7 +79,7 @@ def row_constraint(N):
     for v in range(1, N + 1):
       # all the collumn options
       var_ls = [map_to_var(r, c, v, N) for c in range(N)]
-      clauses.extend(one_value_per_cel(var_ls))
+      clauses.extend(one_value_per_cell_helper(var_ls))
 
   return clauses
 
@@ -92,7 +92,7 @@ def col_constraint(N):
     for v in range(1, N + 1):
       # all the row options
       var_ls = [map_to_var(r, c, v, N) for r in range(N)]
-      clauses.extend(one_value_per_cel(var_ls))
+      clauses.extend(one_value_per_cell_helper(var_ls))
 
   return clauses
 
@@ -100,7 +100,7 @@ def col_constraint(N):
 # 4. Box constraint
 def box_constraint(N):
   clauses = []
-  B = math.sqrt(N)
+  B = int(math.sqrt(N))
   
   # go through grid per box
   for outer_r in range(0, N, B):
@@ -115,7 +115,7 @@ def box_constraint(N):
             r = outer_r + inner_r
             c = outer_c + inner_c
             var_ls.append(map_to_var(r, c, v, N))
-      clauses.extend(one_value_per_cel(var_ls))
+      clauses.extend(one_value_per_cell_helper(var_ls))
   return clauses
 
 
@@ -168,7 +168,6 @@ def to_cnf(input_path: str) -> Tuple[Iterable[Iterable[int]], int]:
   
   grid = read_text(input_path)
   N = len(grid)
-
   clauses = []
   num_vars = N ** 3
 
@@ -180,3 +179,5 @@ def to_cnf(input_path: str) -> Tuple[Iterable[Iterable[int]], int]:
   clauses += clues(grid, N)
 
   return (clauses, num_vars)
+
+# command to run in terminal: python3 main.py --in ../"EXAMPLE puzzles (input)"/example_n9.txt  --out example.cnf
